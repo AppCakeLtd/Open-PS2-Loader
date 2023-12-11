@@ -75,7 +75,7 @@ IOP_OBJS =	iomanx.o filexio.o ps2fs.o usbd.o bdmevent.o \
 		bdm.o bdmfs_fatfs.o usbmass_bd.o iLinkman.o IEEE1394_bd.o mx4sio_bd.o \
 		ps2atad.o hdpro_atad.o poweroff.o ps2hdd.o xhdd.o genvmc.o lwnbdsvr.o \
 		ps2dev9.o smsutils.o ps2ip.o smap.o isofs.o nbns-iop.o \
-		sio2man.o padman.o mcman.o mcserv.o \
+		sio2man.o padman.o mcman.o mcserv.o sd2psxman.o \
 		httpclient-iop.o netman.o ps2ips.o \
 		bdm_mcemu.o hdd_mcemu.o smb_mcemu.o \
 		iremsndpatch.o apemodpatch.o f2techioppatch.o cleareffects.o resetspu.o \
@@ -300,6 +300,8 @@ clean:
 	$(MAKE) -C modules/mcemu USE_BDM=1 clean
 	$(MAKE) -C modules/mcemu USE_HDD=1 clean
 	$(MAKE) -C modules/mcemu USE_SMB=1 clean
+	echo " -sd2psxman"
+	$(MAKE) -C modules/sd2psxman clean
 	echo " -genvmc"
 	$(MAKE) -C modules/vmc/genvmc clean
 	echo " -lwnbdsvr"
@@ -453,6 +455,12 @@ modules/iopcore/resetspu/resetspu.irx: modules/iopcore/resetspu
 
 $(EE_ASM_DIR)resetspu.s: modules/iopcore/resetspu/resetspu.irx | $(EE_ASM_DIR)
 	$(BIN2S) $< $@ resetspu_irx
+
+modules/sd2psxman/irx/sd2psxman.irx: modules/sd2psxman
+	$(MAKE) -C $<
+
+$(EE_ASM_DIR)sd2psxman.s: modules/sd2psxman/irx/sd2psxman.irx
+	$(BIN2S) $< $@ sd2psxman_irx
 
 modules/mcemu/bdm_mcemu.irx: modules/mcemu
 	$(MAKE) $(MCEMU_DEBUG_FLAGS) $(PADEMU_FLAGS) USE_BDM=1 -C $< all
