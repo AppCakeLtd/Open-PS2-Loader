@@ -291,6 +291,10 @@ static void itemExecSelect(struct menu_item *curMenu)
     if (support) {
         if (support->enabled) {
             if (curMenu->current) {
+                char *startup = support->itemGetStartup(curMenu->current->item.id);
+                uint8_t *gameid = (uint8_t *)startup;
+                sysSetGameIDMCP2(gameid);
+                
                 config_set_t *configSet = menuLoadConfig();
                 support->itemLaunch(support, curMenu->current->item.id, configSet);
             }
@@ -354,6 +358,12 @@ static void itemExecTriangle(struct menu_item *curMenu)
         return;
 
     item_list_t *support = curMenu->userdata;
+
+    // sysPingMCP2();
+
+    // char *startup = support->itemGetStartup(curMenu->current->item.id);
+    // guiMsgBox(startup, 0, NULL);
+
 
     if (support) {
         if (!(support->flags & MODE_FLAG_NO_COMPAT)) {
@@ -1781,6 +1791,8 @@ static void init(void)
 
     padInit(0);
     configInit(NULL);
+
+    sysPingMCP2();
 
     rmInit();
     lngInit();

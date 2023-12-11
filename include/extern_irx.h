@@ -72,6 +72,8 @@ IMPORT_BIN2C(iremsndpatch_irx);
 
 IMPORT_BIN2C(libsd_irx);
 
+IMPORT_BIN2C(sd2psxman_irx);
+
 IMPORT_BIN2C(mcman_irx);
 
 IMPORT_BIN2C(mcserv_irx);
