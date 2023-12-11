@@ -256,10 +256,15 @@ static void itemExecSelect(struct menu_item *curMenu)
     if (support) {
         if (support->enabled) {
             if (curMenu->current) {
+                char *startup = support->itemGetStartup(curMenu->current->item.id);
+                uint8_t *gameid = (uint8_t *)startup;
+                sysSetGameIDMCP2(gameid);
+                
                 config_set_t *configSet = menuLoadConfig();
                 support->itemLaunch(curMenu->current->item.id, configSet);
             }
         } else {
+            // sysPingMCP2();
             support->itemInit();
             moduleUpdateMenu(support->mode, 0, 0);
             // Manual refreshing can only be done if either auto refresh is disabled or auto refresh is disabled for the item.
@@ -304,6 +309,12 @@ static void itemExecTriangle(struct menu_item *curMenu)
         return;
 
     item_list_t *support = curMenu->userdata;
+
+    // sysPingMCP2();
+
+    // char *startup = support->itemGetStartup(curMenu->current->item.id);
+    // guiMsgBox(startup, 0, NULL);
+
 
     if (support) {
         if (!(support->flags & MODE_FLAG_NO_COMPAT)) {
@@ -1695,6 +1706,8 @@ static void init(void)
     padInit(0);
     int padStatus = 0;
     configInit(NULL);
+
+    sysPingMCP2();
 
     rmInit();
     lngInit();

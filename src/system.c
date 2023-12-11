@@ -27,6 +27,9 @@
 #include "include/cheatman.h"
 #include "include/xparam.h"
 
+#include <sifrpc.h>
+#include "../modules/sd2psxman/sd2psxman_common.h"
+
 #ifdef PADEMU
 #include <libds34bt.h>
 #include <libds34usb.h>
@@ -97,6 +100,10 @@ void thmEnd();
 void rmEnd();
 
 static void poweroffHandler(void *arg);
+
+bool hasmcpinited = false;
+bool ismcp2detected = false;
+static SifRpcClientData_t sd2psxman_RPC;
 
 int sysLoadModuleBuffer(void *buffer, int size, int argc, char *argv)
 {
@@ -220,6 +227,9 @@ void sysReset(int modload_mask)
 
     LOG("[SIO2MAN]:\n");
     sysLoadModuleBuffer(&sio2man_irx, size_sio2man_irx, 0, NULL);
+
+    LOG("[SD2PSXMAN]:\n");
+    sysLoadModuleBuffer(&sd2psxman_irx, size_sd2psxman_irx, 0, NULL);
 
     if (modload_mask & SYS_LOAD_MC_MODULES) {
         LOG("[MCMAN]:\n");
@@ -979,4 +989,54 @@ int sysCheckVMC(const char *prefix, const char *sep, char *name, int createSize,
         }
     }
     return size;
+}
+
+void sysSetGameIDMCP2(const char* gameid) {
+    if (!ismcp2detected) {
+        return;
+    }
+
+    if (gameid == NULL) {
+        return;
+    }
+
+    sd2psxman_gameid_rpc_pkt_t pkt;
+    memset(&pkt, 0, SD2PSXMAN_GAMEID_RPC_PKT_SIZE);
+
+    pkt.port = 2;
+    pkt.slot = 0;
+
+    pkt.gameid_len = strlen(gameid) + 1;
+    strcpy(pkt.gameid, gameid);
+
+    if (SifCallRpc(&sd2psxman_RPC, SD2PSXMAN_SET_GAMEID, 0, &pkt, SD2PSXMAN_RPC_PKT_SIZE, &pkt, SD2PSXMAN_RPC_PKT_SIZE, NULL, NULL) < 0) {
+        LOG("%s: RPC ERROR\n", __FUNCTION__);
+        return;
+    }
+}
+
+void sysPingMCP2() {
+    if (!hasmcpinited) {
+        while (SifBindRpc(&sd2psxman_RPC, 0xB0355, 0) < 0) {
+            LOG("sd2psxman: bind failed\n");
+            nopdelay();
+        }
+
+        hasmcpinited = true;
+    }
+
+    sd2psxman_rpc_pkt_t pkt;
+    memset(&pkt, 0, SD2PSXMAN_RPC_PKT_SIZE);
+
+    pkt.port = 2;
+    pkt.slot = 0;
+
+    if (SifCallRpc(&sd2psxman_RPC, SD2PSXMAN_PING, 0, &pkt, SD2PSXMAN_RPC_PKT_SIZE, &pkt, SD2PSXMAN_RPC_PKT_SIZE, NULL, NULL) < 0) {
+        LOG("%s: RPC ERROR\n", __FUNCTION__);
+        return;
+    }
+
+    ismcp2detected = true;
+
+    return;
 }
