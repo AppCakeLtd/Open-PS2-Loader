@@ -291,7 +291,7 @@ static void itemExecSelect(struct menu_item *curMenu)
     if (support) {
         if (support->enabled) {
             if (curMenu->current) {
-                char *startup = support->itemGetStartup(curMenu->current->item.id);
+                char *startup = support->itemGetStartup(support, curMenu->current->item.id);
                 uint8_t *gameid = (uint8_t *)startup;
                 sysSetGameIDMCP2(gameid);
                 
