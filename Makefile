@@ -44,7 +44,7 @@ DECI2_DEBUG ?= 0
 
 EXCEPTION_HANDLER ?= 1
 
-ATA_UDMA_PLUS ?= 1
+ATA_UDMA_PLUS ?= 0
 
 # ======== DO NOT MODIFY VALUES AFTER THIS POINT! UNLESS YOU KNOW WHAT YOU ARE DOING ========
 REVISION = $(shell expr $(shell git rev-list --count HEAD) + 2)
