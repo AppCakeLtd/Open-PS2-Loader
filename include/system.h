@@ -25,6 +25,6 @@ int sysLoadModuleBuffer(void *buffer, int size, int argc, char *argv);
 int sysCheckMC(void);
 int sysCheckVMC(const char *prefix, const char *sep, char *name, int createSize, vmc_superblock_t *vmc_superblock);
 void sysPingMCP2();
-void sysSetGameIDMCP2(const char *gameid);
+void sysSetGameIDMCP2(char *gameid);
 
 #endif
