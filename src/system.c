@@ -997,7 +997,7 @@ int sysCheckVMC(const char *prefix, const char *sep, char *name, int createSize,
     return size;
 }
 
-void sysSetGameIDMCP2(char* gameid) {
+void sysSetGameIDMCP2(const char* gameid) {
     if (!ismcp2detected) {
         return;
     }

@@ -291,12 +291,14 @@ static void itemExecSelect(struct menu_item *curMenu)
     if (support) {
         if (support->enabled) {
             if (curMenu->current) {
-                char *gameid = support->itemGetStartup(support, curMenu->current->item.id);
-                sysSetGameIDMCP2(gameid);
+                char *startup = support->itemGetStartup(support, curMenu->current->item.id);
                 
-                guiSetGameId(gameid);
-                guiRenderTextScreen(gameid);
+                guiSetGameId(startup);
+                guiRenderTextScreen(startup);
                 sleep(1);
+
+                uint8_t *gameid = (uint8_t *)startup;
+                sysSetGameIDMCP2(gameid);
                 
                 config_set_t *configSet = menuLoadConfig();
                 support->itemLaunch(support, curMenu->current->item.id, configSet);
