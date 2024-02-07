@@ -715,6 +715,13 @@ static void ethLaunchGame(item_list_t* pItemList, int id, config_set_t *configSe
     // adjust ZSO cache
     settings->common.zso_cache = smbCacheSize;
 
+    #if (!defined(__DEBUG) && !defined(_DTL_T10000))
+    AddHistoryRecordUsingFullPath(filename);
+    #endif
+
+    uint8_t *gameid = (uint8_t *)game->startup;
+    sysSetGameIDMCP2(gameid);
+
     sysLaunchLoaderElf(filename, "ETH_MODE", size_smb_cdvdman_irx, smb_cdvdman_irx, size_mcemu_irx, smb_mcemu_irx, EnablePS2Logo, compatmask);
 }
 
