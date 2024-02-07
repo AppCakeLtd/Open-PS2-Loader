@@ -763,9 +763,6 @@ void sysLaunchLoaderElf(const char *filename, const char *mode_str, int size_cdv
     void *eeloadCopy, *initUserMemory;
 
     ethGetNetConfig(local_ip_address, local_netmask, local_gateway);
-#if (!defined(__DEBUG) && !defined(_DTL_T10000))
-    // AddHistoryRecordUsingFullPath(filename);
-#endif
 
     if (gExitPath[0] == '\0')
         strncpy(gExitPath, "Browser", sizeof(gExitPath));

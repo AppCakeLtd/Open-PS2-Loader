@@ -256,10 +256,6 @@ static void itemExecSelect(struct menu_item *curMenu)
     if (support) {
         if (support->enabled) {
             if (curMenu->current) {
-                char *startup = support->itemGetStartup(curMenu->current->item.id);
-                uint8_t *gameid = (uint8_t *)startup;
-                sysSetGameIDMCP2(gameid);
-                
                 config_set_t *configSet = menuLoadConfig();
                 support->itemLaunch(curMenu->current->item.id, configSet);
             }
