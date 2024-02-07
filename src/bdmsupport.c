@@ -451,6 +451,13 @@ void bdmLaunchGame(int id, config_set_t *configSet)
         gAutoLaunchBDMGame = NULL;
     }
 
+    #if (!defined(__DEBUG) && !defined(_DTL_T10000))
+    AddHistoryRecordUsingFullPath(filename);
+    #endif
+
+    uint8_t *gameid = (uint8_t *)game->startup;
+    sysSetGameIDMCP2(gameid);
+
     if (!strcmp(bdmDriver, "usb")) {
         settings->common.fakemodule_flags |= FAKE_MODULE_FLAG_USBD;
         sysLaunchLoaderElf(filename, "BDM_USB_MODE", irx_size, irx, size_mcemu_irx, bdm_mcemu_irx, EnablePS2Logo, compatmask);
