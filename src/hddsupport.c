@@ -607,6 +607,14 @@ void hddLaunchGame(item_list_t* pItemList, int id, config_set_t *configSet)
     // adjust ZSO cache
     settings->common.zso_cache = hddCacheSize;
 
+    #if (!defined(__DEBUG) && !defined(_DTL_T10000))
+    AddHistoryRecordUsingFullPath(filename);
+    #endif
+
+    // send gameid here to allow settings to settle
+    uint8_t *gameid = (uint8_t *)game->startup;
+    sysSetGameIDMCP2(gameid);
+
     sysLaunchLoaderElf(filename, "HDD_MODE", size_irx, irx, size_mcemu_irx, hdd_mcemu_irx, EnablePS2Logo, compatMode);
 }
 

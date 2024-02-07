@@ -709,6 +709,14 @@ static void ethLaunchGame(item_list_t* pItemList, int id, config_set_t *configSe
         strcpy(filename, game->startup);
     deinit(NO_EXCEPTION, ETH_MODE); // CAREFUL: deinit will call ethCleanUp, so ethGames/game will be freed
 
+    #if (!defined(__DEBUG) && !defined(_DTL_T10000))
+    AddHistoryRecordUsingFullPath(filename);
+    #endif
+
+    // send gameid here to allow settings to settle
+    uint8_t *gameid = (uint8_t *)game->startup;
+    sysSetGameIDMCP2(gameid);
+
     settings->common.fakemodule_flags |= FAKE_MODULE_FLAG_DEV9;
     settings->common.fakemodule_flags |= FAKE_MODULE_FLAG_SMAP;
 

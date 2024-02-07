@@ -512,6 +512,14 @@ void bdmLaunchGame(item_list_t* pItemList, int id, config_set_t *configSet)
         gAutoLaunchBDMGame = NULL;
     }
 
+    #if (!defined(__DEBUG) && !defined(_DTL_T10000))
+    AddHistoryRecordUsingFullPath(filename);
+    #endif
+
+    // send gameid here to allow settings to settle
+    uint8_t *gameid = (uint8_t *)game->startup;
+    sysSetGameIDMCP2(gameid);
+
     LOG("bdm pre sysLaunchLoaderElf\n");
     settings->bdDeviceId = pDeviceData->massDeviceIndex;
     if (!strcmp(pDeviceData->bdmDriver, "usb")) {
